@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="285.0" prefWidth="420.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.Login">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="285.0" prefWidth="420.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="View_Controller.Login">
    <children>
-      <Button fx:id="loginBTN" layoutX="77.0" layoutY="202.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="35.0" prefWidth="70.0" text="Login">
+      <Button fx:id="loginBTN" layoutX="77.0" layoutY="202.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="35.0" prefWidth="100.0" text="Login">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -19,18 +19,10 @@
             <Font name="System Bold" size="23.0" />
          </font>
       </Label>
-      <Label fx:id="userNameLabel" layoutX="57.0" layoutY="98.0" text="User Name: ">
-         <font>
-            <Font name="System Bold" size="16.0" />
-         </font>
-      </Label>
+      <Label fx:id="userNameLabel" layoutX="25.0" layoutY="102.0" text="User Name: " />
       <TextField fx:id="userField" layoutX="163.0" layoutY="98.0" prefHeight="25.0" prefWidth="197.0" />
-      <Label fx:id="passwordLabel" layoutX="57.0" layoutY="144.0" text="Password: ">
-         <font>
-            <Font name="System Bold" size="16.0" />
-         </font>
-      </Label>
-      <Button fx:id="cancelBTN" layoutX="244.0" layoutY="202.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="35.0" prefWidth="70.0" text="Cancel">
+      <Label fx:id="passwordLabel" layoutX="29.0" layoutY="148.0" text="Password: " />
+      <Button fx:id="cancelBTN" layoutX="244.0" layoutY="202.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="35.0" prefWidth="100.0" text="Cancel">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>

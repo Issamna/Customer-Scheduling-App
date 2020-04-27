@@ -13,14 +13,19 @@ import Utilities.QueryDB;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-public class Login {
+public class Login implements Initializable {
     @FXML
     public Label loginTitle;
     @FXML
@@ -31,7 +36,12 @@ public class Login {
     public TextField userField;
     @FXML
     public PasswordField passwordField;
+    @FXML
+    public Button loginBTN;
+    @FXML
+    public Button cancelBTN;
     private User user = new User();
+    ResourceBundle ln;
 
     public void onLogin(ActionEvent event) {
         //get input
@@ -39,18 +49,18 @@ public class Login {
         String passwordInput = passwordField.getText();
         //check for empty field
         if(userInput.length() == 0 || passwordInput.length() == 0){
-            dialog("ERROR","Login Error", "Login fields are empty");
+            dialog("ERROR",ln.getString("errorTitle"), ln.getString("empty"));
         }
         else{
             user = validateUsername(userInput);
             if(user == null){
-                dialog("ERROR","Login Error", "Username does not exist");
+                dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectUser"));
             }
             else if(user.getPassword().equals(passwordInput)){
-                dialog("INFORMATION", "Login", "Login Successful");
+                dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
             }
             else{
-                dialog("ERROR","Login Error","Password does not match");
+                dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectPassword"));
             }
         }
     }
@@ -70,7 +80,8 @@ public class Login {
                 userReturn.setUserID(result.getInt("userId"));
                 userReturn.setUserName(result.getString("userName"));
                 userReturn.setPassword(result.getString("password"));
-            } else {
+            }
+            else {
                 return null;
             }
 
@@ -81,4 +92,14 @@ public class Login {
         return userReturn;
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle ln) {
+        this.ln = ln;
+
+        loginTitle.setText(ln.getString("header"));
+        userNameLabel.setText(ln.getString("username"));
+        passwordLabel.setText(ln.getString("password"));
+        loginBTN.setText(ln.getString("login"));
+        cancelBTN.setText(ln.getString("cancel"));
+    }
 }
