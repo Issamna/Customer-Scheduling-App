@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static Utilities.Dialog.dialog;
+
 public class DBConnection {
 
 
     private static final String url = "jdbc:mysql://3.227.166.251/U07gSn";
     private static final String driver = "com.mysql.jdbc.Driver";
-    private static Connection conn = null;
+    static Connection conn;
 
     private static final String username = "U07gSn";
     private static final String password = "53689023397";
@@ -22,9 +24,11 @@ public class DBConnection {
         }
         catch (ClassNotFoundException e){
             System.out.println("Error: "+e.getMessage());
+            dialog("ERROR","ClassNotFoundException","Error: "+ e.getMessage());
         }
         catch (SQLException e){
             System.out.println("Error: "+e.getMessage());
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
         }
         return conn;
     }
@@ -35,6 +39,7 @@ public class DBConnection {
         }
         catch (SQLException e){
             System.out.println("Error: "+e.getMessage());
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
         }
     }
 
