@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="custTable" layoutX="18.0" layoutY="130.0" prefHeight="363.0" prefWidth="290.0">
+        <columns>
+          <TableColumn fx:id="custName" prefWidth="146.0" text="Name" />
+          <TableColumn fx:id="custPhone" prefWidth="142.0" text="Phone" />
+        </columns>
+      </TableView>
+      <TableView fx:id="apptTable" layoutX="338.0" layoutY="130.0" prefHeight="363.0" prefWidth="523.0">
+        <columns>
+          <TableColumn fx:id="apptStart" prefWidth="83.0" text="Start" />
+          <TableColumn fx:id="apptEnd" text="End" />
+            <TableColumn fx:id="apptTitle" prefWidth="75.0" text="Title" />
+            <TableColumn fx:id="apptType" prefWidth="87.0" text="Type" />
+            <TableColumn fx:id="apptCustomer" prefWidth="104.0" text="Customer" />
+            <TableColumn fx:id="apptLocation" prefWidth="92.0" text="Location" />
+        </columns>
+      </TableView>
+      <Label layoutX="18.0" layoutY="14.0" text="Customer Schedule">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="18.0" layoutY="69.0" text="Customer Directory">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="custSearch" layoutX="18.0" layoutY="99.0" prefHeight="25.0" prefWidth="149.0" />
+      <Button layoutX="174.0" layoutY="99.0" mnemonicParsing="false" onAction="#onCustSearch" prefWidth="60.0" text="Search" />
+      <Button layoutX="242.0" layoutY="99.0" mnemonicParsing="false" onAction="#onCusClear" prefHeight="25.0" prefWidth="60.0" text="Clear" />
+      <Button layoutX="111.0" layoutY="506.0" mnemonicParsing="false" onAction="#onCustNew" prefHeight="25.0" prefWidth="60.0" text="New" />
+      <Button layoutX="181.0" layoutY="506.0" mnemonicParsing="false" onAction="#onCustEdit" prefHeight="25.0" prefWidth="60.0" text="Edit" />
+      <Label layoutX="338.0" layoutY="69.0" text="Appoinments">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="apptSearch" layoutX="338.0" layoutY="99.0" prefHeight="25.0" prefWidth="149.0" />
+      <Button layoutX="494.0" layoutY="99.0" mnemonicParsing="false" onAction="#onApptSearch" prefWidth="60.0" text="Search" />
+      <Button layoutX="560.0" layoutY="99.0" mnemonicParsing="false" onAction="#onApptClear" prefHeight="25.0" prefWidth="60.0" text="Clear" />
+      <Button layoutX="664.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptNew" prefHeight="25.0" prefWidth="60.0" text="New" />
+      <Button layoutX="734.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptEdit" prefHeight="25.0" prefWidth="60.0" text="Edit" />
+      <Button layoutX="801.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptDelete" prefHeight="25.0" prefWidth="60.0" text="Delete" />
+      <RadioButton layoutX="707.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptWeek" text="By Week" />
+      <RadioButton layoutX="788.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptMonth" text="By Month" />
+      <Button layoutX="734.0" layoutY="20.0" mnemonicParsing="false" onAction="#onShowReport" prefHeight="25.0" prefWidth="60.0" text="Reports" />
+      <Button layoutX="801.0" layoutY="20.0" mnemonicParsing="false" onAction="#onExit" prefHeight="25.0" prefWidth="60.0" text="Exit" />
+      <RadioButton layoutX="647.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptAll" text="All" />
+      <Button layoutX="248.0" layoutY="506.0" mnemonicParsing="false" onAction="#onCustDelete" prefHeight="25.0" prefWidth="60.0" text="Delete" />
+   </children>
+</AnchorPane>

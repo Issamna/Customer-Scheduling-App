@@ -1,4 +1,4 @@
-package View_Controller;
+package Controller;
 /*
 C195 Performance Assessment
 Issam Ahmed

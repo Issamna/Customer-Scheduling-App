@@ -16,7 +16,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
        // Locale.setDefault(new Locale("es", "ES"));
         ResourceBundle ln = ResourceBundle.getBundle("Utilities/Languages/login");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View_Controller/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/Login.fxml"));
         loader.setResources(ln);
         Parent root = loader.load();
         Scene scene = new Scene(root);
