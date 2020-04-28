@@ -61,9 +61,7 @@ public class Login implements Initializable {
             else if(user.getPassword().equals(passwordInput)){
                 dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
                 Log.writeLog(user.getUserName());
-                Main.showMainScreen();
-                Main.currentUser
-                main.currentUser = user;
+
             }
             else{
                 dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectPassword"));
