@@ -9,6 +9,7 @@ import Model.User;
 import static Utilities.Dialog.dialog;
 
 import Utilities.DBConnection;
+import Utilities.Log;
 import Utilities.QueryDB;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +23,6 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Login implements Initializable {
@@ -58,6 +58,7 @@ public class Login implements Initializable {
             }
             else if(user.getPassword().equals(passwordInput)){
                 dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
+                Log.writeLog(user.getUserName());
             }
             else{
                 dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectPassword"));
@@ -91,6 +92,7 @@ public class Login implements Initializable {
         }
         return userReturn;
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle ln) {
