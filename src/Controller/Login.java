@@ -5,25 +5,26 @@ Issam Ahmed
 000846138
 4/27/2020
 */
-import Model.User;
-import static Utilities.Dialog.dialog;
 
+import Model.User;
 import Utilities.DBConnection;
 import Utilities.Log;
 import Utilities.QueryDB;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+
+import static Utilities.Dialog.dialog;
 
 public class Login implements Initializable {
     @FXML
@@ -43,6 +44,7 @@ public class Login implements Initializable {
     private User user = new User();
     ResourceBundle ln;
 
+
     public void onLogin(ActionEvent event) {
         //get input
         String userInput = userField.getText();
@@ -59,6 +61,9 @@ public class Login implements Initializable {
             else if(user.getPassword().equals(passwordInput)){
                 dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
                 Log.writeLog(user.getUserName());
+                Main.showMainScreen();
+                Main.currentUser
+                main.currentUser = user;
             }
             else{
                 dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectPassword"));
