@@ -1,4 +1,4 @@
-package Utilities;
+package App.Utilities;
 /*
 C195 Performance Assessment
 Issam Ahmed
@@ -11,8 +11,9 @@ import java.time.format.DateTimeFormatter;
 
 //Logger class to track login
 public class Log {
-    private static String logFile = "src/Utilities/loginreport.txt";
+    private static String logFile = "src/App/Utilities/loginreport.txt";
     private static PrintWriter writer;
+
 
     private static void startLog(){
        try{

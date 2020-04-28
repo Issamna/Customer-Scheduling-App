@@ -1,4 +1,4 @@
-package Controller;
+package App.Controller;
 /*
 C195 Performance Assessment
 Issam Ahmed
@@ -6,25 +6,31 @@ Issam Ahmed
 4/27/2020
 */
 
-import Model.User;
-import Utilities.DBConnection;
-import Utilities.Log;
-import Utilities.QueryDB;
+import App.Main;
+import App.Model.User;
+import App.Utilities.DBConnection;
+import App.Utilities.Log;
+import App.Utilities.QueryDB;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static Utilities.Dialog.dialog;
+import static App.Utilities.Dialog.dialog;
 
 public class Login implements Initializable {
     @FXML
@@ -42,6 +48,8 @@ public class Login implements Initializable {
     @FXML
     public Button cancelBTN;
     private User user = new User();
+    private Stage stage;
+    private Parent scene;
     ResourceBundle ln;
 
 
@@ -61,7 +69,17 @@ public class Login implements Initializable {
             else if(user.getPassword().equals(passwordInput)){
                 dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
                 Log.writeLog(user.getUserName());
-
+                Main.currentUser = user;
+                try {
+                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                    scene = FXMLLoader.load(getClass().getResource("/App/View/MainScreen.fxml"));
+                    stage.setTitle("Customer Schedule | Dashboard");
+                    stage.setScene(new Scene(scene));
+                    stage.show();
+                }
+                catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
             }
             else{
                 dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectPassword"));
@@ -70,8 +88,7 @@ public class Login implements Initializable {
     }
 
     public void onCancel(ActionEvent event) {
-        DBConnection.close();
-        System.exit(0);
+        ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
     }
 
     private User validateUsername(String userInput) {
@@ -107,4 +124,5 @@ public class Login implements Initializable {
         loginBTN.setText(ln.getString("login"));
         cancelBTN.setText(ln.getString("cancel"));
     }
+
 }

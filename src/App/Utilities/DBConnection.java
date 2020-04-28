@@ -1,10 +1,10 @@
-package Utilities;
+package App.Utilities;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static Utilities.Dialog.dialog;
+import static App.Utilities.Dialog.dialog;
 
 public class DBConnection {
 

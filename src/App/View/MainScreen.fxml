@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Controller.MainScreen">
    <children>
       <TableView fx:id="custTable" layoutX="18.0" layoutY="130.0" prefHeight="363.0" prefWidth="290.0">
         <columns>
@@ -27,7 +27,7 @@
             <TableColumn fx:id="apptLocation" prefWidth="92.0" text="Location" />
         </columns>
       </TableView>
-      <Label layoutX="18.0" layoutY="14.0" text="Customer Schedule">
+      <Label layoutX="18.0" layoutY="14.0" text="Dashboard">
          <font>
             <Font name="System Bold" size="25.0" />
          </font>

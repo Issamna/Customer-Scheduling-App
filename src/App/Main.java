@@ -1,11 +1,13 @@
-import Model.User;
-import Utilities.DBConnection;
-import Utilities.Log;
+package App;
+
+import App.Model.User;
+import App.Utilities.DBConnection;
 import javafx.application.Application;
-import javafx.fxml.FXML;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 
@@ -15,13 +17,13 @@ import java.util.ResourceBundle;
 
 
 public class Main extends Application {
-    static User currentUser;
-    static Stage primaryStage;
+    public static User currentUser = new User();
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-       // Locale.setDefault(new Locale("es", "ES"));
-        ResourceBundle ln = ResourceBundle.getBundle("Utilities/Languages/login");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/Login.fxml"));
+        //Locale.setDefault(new Locale("es", "ES"));
+        ResourceBundle ln = ResourceBundle.getBundle("App/Utilities/Languages/login");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/App/View/Login.fxml"));
         loader.setResources(ln);
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -36,14 +38,5 @@ public class Main extends Application {
         DBConnection.close();
         System.out.println("System Exit");
     }
-    public void showMainScreen() throws IOException{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/MainScreen.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        primaryStage.setTitle("Customer Scheduling");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
 
 }

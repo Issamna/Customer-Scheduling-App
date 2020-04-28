@@ -1,4 +1,4 @@
-package Model;
+package App.Model;
 
 /*
 C195 Performance Assessment

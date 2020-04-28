@@ -1,4 +1,4 @@
-package Utilities;
+package App.Utilities;
 /*
 C195 Performance Assessment
 Issam Ahmed
@@ -9,8 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static Utilities.DBConnection.conn;
-import static Utilities.Dialog.dialog;
+import static App.Utilities.DBConnection.conn;
+import static App.Utilities.Dialog.dialog;
 
 public class QueryDB {
     private static String query;
