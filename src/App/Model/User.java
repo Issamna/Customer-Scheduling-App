@@ -38,7 +38,6 @@ public class User {
     }
 
     //Accessors (getters)
-
     public int getUserID() {
         return userID;
     }

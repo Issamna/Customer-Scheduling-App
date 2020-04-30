@@ -17,11 +17,22 @@ public class QueryDB {
     private static Statement statement;
     private static ResultSet result;
 
-    public static void selectQuery(String q){
+    public static void returnQuery(String q){
         query = q;
         try{
             statement = conn.createStatement();
             result = statement.executeQuery(q);
+        }
+        catch (SQLException e){
+            System.out.println("Error: "+e.getMessage());
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+        }
+    }
+    public static void query(String q){
+        query = q;
+        try{
+            statement = conn.createStatement();
+            statement.executeUpdate(q);
         }
         catch (SQLException e){
             System.out.println("Error: "+e.getMessage());

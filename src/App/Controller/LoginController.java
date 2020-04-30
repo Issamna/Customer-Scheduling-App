@@ -8,7 +8,6 @@ Issam Ahmed
 
 import App.Main;
 import App.Model.User;
-import App.Utilities.DBConnection;
 import App.Utilities.Log;
 import App.Utilities.QueryDB;
 import javafx.event.ActionEvent;
@@ -24,7 +23,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +30,7 @@ import java.util.ResourceBundle;
 
 import static App.Utilities.Dialog.dialog;
 
-public class Login implements Initializable {
+public class LoginController implements Initializable {
     @FXML
     public Label loginTitle;
     @FXML
@@ -72,7 +70,7 @@ public class Login implements Initializable {
                 Main.currentUser = user;
                 try {
                     stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-                    scene = FXMLLoader.load(getClass().getResource("/App/View/MainScreen.fxml"));
+                    scene = FXMLLoader.load(getClass().getResource("/App/View/MainScreenView.fxml"));
                     stage.setTitle("Customer Schedule | Dashboard");
                     stage.setScene(new Scene(scene));
                     stage.show();
@@ -95,7 +93,7 @@ public class Login implements Initializable {
         User userReturn = new User();
         try {
             String validateQuery = "SELECT * FROM user WHERE userName = '" + userInput + "'";
-            QueryDB.selectQuery(validateQuery);
+            QueryDB.returnQuery(validateQuery);
             ResultSet result = QueryDB.getResult();
             if (result.next()) {
                 userReturn.setUserID(result.getInt("userId"));

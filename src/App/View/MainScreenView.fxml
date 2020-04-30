@@ -9,12 +9,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Controller.MainScreen">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Controller.MainScreenController">
    <children>
       <TableView fx:id="custTable" layoutX="18.0" layoutY="130.0" prefHeight="363.0" prefWidth="290.0">
         <columns>
-          <TableColumn fx:id="custName" prefWidth="146.0" text="Name" />
-          <TableColumn fx:id="custPhone" prefWidth="142.0" text="Phone" />
+          <TableColumn fx:id="custNameCol" prefWidth="146.0" text="Name" />
+          <TableColumn fx:id="custPhoneCol" prefWidth="142.0" text="Phone" />
         </columns>
       </TableView>
       <TableView fx:id="apptTable" layoutX="338.0" layoutY="130.0" prefHeight="363.0" prefWidth="523.0">

@@ -3,16 +3,12 @@ package App;
 import App.Model.User;
 import App.Utilities.DBConnection;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 
-import java.io.IOException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 
@@ -23,7 +19,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         //Locale.setDefault(new Locale("es", "ES"));
         ResourceBundle ln = ResourceBundle.getBundle("App/Utilities/Languages/login");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/App/View/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/App/View/MainScreenView.fxml"));
         loader.setResources(ln);
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -35,6 +31,7 @@ public class Main extends Application {
 
         DBConnection.start();
         launch(args);
+
         DBConnection.close();
         System.out.println("System Exit");
     }
