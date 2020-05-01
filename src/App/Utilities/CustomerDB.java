@@ -106,7 +106,7 @@ public class CustomerDB {
         QueryDB.query(query);
     }
 
-    public static ObservableList<Customer> getAllCustomers()throws SQLException{
+    public static ObservableList<Customer> getAllCustomers(){
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
         String query = "SELECT customer.customerId, customer.customerName, " +
                 "address.addressId, address.address, address.address2, address.postalCode, address.phone, " +
@@ -117,20 +117,25 @@ public class CustomerDB {
                 "ORDER BY customer.customerName;";
         QueryDB.returnQuery(query);
         ResultSet result = QueryDB.getResult();
-        while(result.next()){
-            int customerID = result.getInt("customerId");
-            String customerName = result.getString("customerName");
-            Country country = new Country(result.getInt("countryId"), result.getString("country"));
-            City city = new City(result.getInt("cityId"), result.getString("city"), country);
-            Address address = new Address();
-            address.setAddressID(result.getInt("addressId"));
-            address.setAddress(result.getString("address"));
-            address.setAddress2(result.getString("address2"));
-            address.setCity(city);
-            address.setPostalCode(result.getString("postalCode"));
-            address.setPhone(result.getString("phone"));
-            Customer customer = new Customer(customerID, customerName, address);
-            allCustomers.add(customer);
+        try {
+            while (result.next()) {
+                int customerID = result.getInt("customerId");
+                String customerName = result.getString("customerName");
+                Country country = new Country(result.getInt("countryId"), result.getString("country"));
+                City city = new City(result.getInt("cityId"), result.getString("city"), country);
+                Address address = new Address();
+                address.setAddressID(result.getInt("addressId"));
+                address.setAddress(result.getString("address"));
+                address.setAddress2(result.getString("address2"));
+                address.setCity(city);
+                address.setPostalCode(result.getString("postalCode"));
+                address.setPhone(result.getString("phone"));
+                Customer customer = new Customer(customerID, customerName, address);
+                allCustomers.add(customer);
+            }
+        }
+        catch (SQLException e){
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
         }
         return allCustomers;
     }
@@ -200,10 +205,12 @@ public class CustomerDB {
         return foundCustomers;
     }
     public static void deleteCustomer(Customer customer){
+        AppointmentDB.deleteAppointment(customer.getCustomerId());
+        int addressId = customer.getAddress().getAddressID();
        String query = "DELETE FROM customer WHERE customerId = "+customer.getCustomerId();
        QueryDB.query(query);
-      // query = "DELETE FROM address WHERE addressId = "+customer.getAddress().getAddressID();
-      // QueryDB.query(query);
+       query = "DELETE FROM address WHERE addressId = "+addressId;
+       QueryDB.query(query);
     }
 
 

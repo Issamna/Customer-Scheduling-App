@@ -28,11 +28,7 @@ public class CustomerController implements Initializable {
     public TextField countryField;
     public TextField zipField;
     private boolean editMode;
-    private int editCustomerID = -1;
     private Customer editCustomer;
-
-    public CustomerController() {
-    }
 
     public void onSave(ActionEvent event) {
         if(!editMode) {
@@ -40,7 +36,7 @@ public class CustomerController implements Initializable {
                     countryField.getText(), phNumberField.getText(), zipField.getText());
         }
         else{
-            CustomerDB.editCustomer(editCustomerID, editCustomer.getAddress().getAddressID(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
+            CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressID(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
                     countryField.getText(), phNumberField.getText(), zipField.getText());
         }
         Dialog.dialog("INFORMATION", "Customer "+nameField.getText(), nameField.getText() + " contact information saved.");
@@ -69,10 +65,9 @@ public class CustomerController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        editCustomerID = getCustomerEditID();
-        if(editCustomerID >=0){
+        if(getCustomerEditID() >=0){
             editMode = true;
-            editCustomer = CustomerDB.searchCustomer(editCustomerID);
+            editCustomer = CustomerDB.searchCustomer(getCustomerEditID());
             nameField.setText(editCustomer.getCustomerName());
             phNumberField.setText(editCustomer.getAddress().getPhone());
             address1Field.setText(editCustomer.getAddress().getAddress());

@@ -9,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 
@@ -19,7 +22,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         //Locale.setDefault(new Locale("es", "ES"));
         ResourceBundle ln = ResourceBundle.getBundle("App/Utilities/Languages/login");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/App/View/MainScreenView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/App/View/LoginView.fxml"));
         loader.setResources(ln);
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -31,7 +34,6 @@ public class Main extends Application {
 
         DBConnection.start();
         launch(args);
-
         DBConnection.close();
         System.out.println("System Exit");
     }

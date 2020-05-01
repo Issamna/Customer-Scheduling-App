@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Controller.MainScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="App.Controller.MainScreenController">
    <children>
       <TableView fx:id="custTable" layoutX="18.0" layoutY="130.0" prefHeight="363.0" prefWidth="290.0">
         <columns>
@@ -19,12 +19,11 @@
       </TableView>
       <TableView fx:id="apptTable" layoutX="338.0" layoutY="130.0" prefHeight="363.0" prefWidth="523.0">
         <columns>
-          <TableColumn fx:id="apptStart" prefWidth="83.0" text="Start" />
-          <TableColumn fx:id="apptEnd" text="End" />
-            <TableColumn fx:id="apptTitle" prefWidth="75.0" text="Title" />
-            <TableColumn fx:id="apptType" prefWidth="87.0" text="Type" />
-            <TableColumn fx:id="apptCustomer" prefWidth="104.0" text="Customer" />
-            <TableColumn fx:id="apptLocation" prefWidth="92.0" text="Location" />
+          <TableColumn fx:id="apptStartCol" prefWidth="109.0" text="Start" />
+          <TableColumn fx:id="apptEndCol" prefWidth="106.0" text="End" />
+            <TableColumn fx:id="apptTitleCol" prefWidth="78.0" text="Title" />
+            <TableColumn fx:id="apptTypeCol" prefWidth="100.0" text="Type" />
+            <TableColumn fx:id="apptCustomerCol" prefWidth="129.0" text="Customer" />
         </columns>
       </TableView>
       <Label layoutX="18.0" layoutY="14.0" text="Dashboard">

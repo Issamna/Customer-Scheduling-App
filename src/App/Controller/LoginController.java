@@ -53,8 +53,10 @@ public class LoginController implements Initializable {
 
     public void onLogin(ActionEvent event) {
         //get input
-        String userInput = userField.getText();
-        String passwordInput = passwordField.getText();
+        //String userInput = userField.getText();
+        //String passwordInput = passwordField.getText();
+        String userInput = "test";
+        String passwordInput = "test";
         //check for empty field
         if(userInput.length() == 0 || passwordInput.length() == 0){
             dialog("ERROR",ln.getString("errorTitle"), ln.getString("empty"));
@@ -65,9 +67,10 @@ public class LoginController implements Initializable {
                 dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectUser"));
             }
             else if(user.getPassword().equals(passwordInput)){
-                dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
-                Log.writeLog(user.getUserName());
+               // dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
+               // Log.writeLog(user.getUserName());
                 Main.currentUser = user;
+                System.out.println(user.getUserName()+" "+user.getUserID());
                 try {
                     stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     scene = FXMLLoader.load(getClass().getResource("/App/View/MainScreenView.fxml"));

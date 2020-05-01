@@ -25,8 +25,8 @@
       </Label>
       <TableView fx:id="custTable" layoutX="295.0" layoutY="83.0" prefHeight="304.0" prefWidth="291.0">
          <columns>
-            <TableColumn fx:id="custName" prefWidth="140.0" text="Name" />
-            <TableColumn fx:id="custPhone" prefWidth="154.0" text="Phone" />
+            <TableColumn fx:id="custNameCol" prefWidth="140.0" text="Name" />
+            <TableColumn fx:id="custPhoneCol" prefWidth="154.0" text="Phone" />
          </columns>
       </TableView>
       <Label layoutX="300.0" layoutY="22.0" text="Customer Directory">
