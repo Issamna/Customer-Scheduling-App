@@ -37,7 +37,24 @@ public class AppointmentDB {
                 "WHERE appointmentId = "+appointmentID;
         QueryDB.query(query);
     }
-
+    public static boolean validateOverlap(ZonedDateTime start, ZonedDateTime end, int appointmentId){
+        boolean error = false;
+        Timestamp startTimeStamp = Timestamp.valueOf(start.toLocalDateTime());
+        Timestamp endTimeStamp = Timestamp.valueOf(end.toLocalDateTime());
+        String query = "SELECT * FROM appointment "+
+                "WHERE (('"+startTimeStamp+"' >= start AND '"+startTimeStamp+"' < end) OR ('"+endTimeStamp+"' > start AND '"+endTimeStamp+"' = end)) " +
+                "AND (createdBy = "+currentUser.getUserID()+" AND appointmentID != "+appointmentId+")";
+        QueryDB.returnQuery(query);
+        ResultSet result = QueryDB.getResult();
+        try {
+            if(result.next()){
+                error = true;
+            }
+        } catch (SQLException e) {
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+        }
+        return error;
+    }
     public static ObservableList<Appointment> getAllAppointments(){
         ObservableList<Appointment> allAppointments= FXCollections.observableArrayList();
         String query = "SELECT * FROM appointment WHERE userId = "+Main.currentUser.getUserID()+" ORDER BY start;";

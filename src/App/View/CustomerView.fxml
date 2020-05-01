@@ -105,7 +105,7 @@
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
-            <TextField fx:id="zipField" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <TextField fx:id="postalCodeField" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>

@@ -3,7 +3,6 @@ package App.Controller;
 import App.Model.Customer;
 import App.Utilities.CustomerDB;
 import App.Utilities.Dialog;
-import App.Utilities.QueryDB;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +16,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import static App.Controller.MainScreenController.*;
+import static App.Utilities.Dialog.dialog;
 
 public class CustomerController implements Initializable {
 
@@ -26,23 +26,24 @@ public class CustomerController implements Initializable {
     public TextField address2Field;
     public TextField cityField;
     public TextField countryField;
-    public TextField zipField;
+    public TextField postalCodeField;
     private boolean editMode;
     private Customer editCustomer;
 
     public void onSave(ActionEvent event) {
-        if(!editMode) {
-            CustomerDB.createCustomer(nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
-                    countryField.getText(), phNumberField.getText(), zipField.getText());
+        if(validateSave()) {
+            if (!editMode) {
+                CustomerDB.createCustomer(nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
+                        countryField.getText(), phNumberField.getText(), postalCodeField.getText());
+            } else {
+                CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressID(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
+                        countryField.getText(), phNumberField.getText(), postalCodeField.getText());
+            }
+            Dialog.dialog("INFORMATION", "Customer " + nameField.getText(), nameField.getText() + " contact information saved.");
+            editMode = false;
+            resetCustomerEditID();
+            returnMain(event);
         }
-        else{
-            CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressID(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
-                    countryField.getText(), phNumberField.getText(), zipField.getText());
-        }
-        Dialog.dialog("INFORMATION", "Customer "+nameField.getText(), nameField.getText() + " contact information saved.");
-        editMode = false;
-        resetCustomerEditID();
-        returnMain(event);
     }
 
     public void onCancel(ActionEvent event) {
@@ -63,6 +64,42 @@ public class CustomerController implements Initializable {
         }
     }
 
+    private boolean validateSave(){
+        int error = 0;
+        String content = "";
+        if(nameField.getText().length() == 0 ){
+            error++;
+            content += "Please enter a name. \n";
+        }
+        if(phNumberField.getText().length() <10 || phNumberField.getText().length()>20){
+            error++;
+            content += "Please enter valid phone number. \n";
+        }
+        if(address1Field.getText().length() == 0 ){
+            error++;
+            content += "Please enter an address. \n";
+        }
+        if(cityField.getText().length() == 0 ){
+            error++;
+            content += "Please enter a city. \n";
+        }
+        if(countryField.getText().length() == 0 ){
+            error++;
+            content += "Please enter a country. \n";
+        }
+        if(postalCodeField.getText().length() <5 || postalCodeField.getText().length()>10){
+            error++;
+            content += "Please enter valid ZIP/Postal Code. \n";
+        }
+        if (error == 0){
+            return true;
+        }
+        else {
+            dialog("ERROR","Input Error",content);
+            return false;
+        }
+
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(getCustomerEditID() >=0){
@@ -74,7 +111,7 @@ public class CustomerController implements Initializable {
             address2Field.setText(editCustomer.getAddress().getAddress2());
             cityField.setText(editCustomer.getAddress().getCity().getCityName());
             countryField.setText(editCustomer.getAddress().getCity().getCountry().getCountryName());
-            zipField.setText(editCustomer.getAddress().getPostalCode());
+            postalCodeField.setText(editCustomer.getAddress().getPostalCode());
         }
     }
 }

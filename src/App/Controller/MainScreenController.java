@@ -14,6 +14,7 @@ import App.Utilities.CustomerDB;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXMLLoader;
@@ -21,14 +22,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
 
 import static App.Utilities.Dialog.*;
@@ -46,14 +48,20 @@ public class MainScreenController implements Initializable {
     public TableColumn<Appointment, String> apptTypeCol;
     public TableColumn<Appointment, String> apptCustomerCol;
     public TextField apptSearch;
+    public RadioButton byWeekRadio;
+    public RadioButton byMonthRadio;
+    public RadioButton byAllRadio;
+    public RadioButton byDayRadio;
     private Stage stage;
     private Parent scene;
     private ObservableList<Customer> customers;
     private ObservableList<Appointment> appointments;
     private static int customerEditID = -1;
     private static int appointmentEditID = -1;
+    private DateTimeFormatter timeFormatSrt = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    private static DateTimeFormatter df = DateTimeFormatter.ofPattern("MM-dd-yyyy hh:mm a");
 
-    public void onCustSearch(ActionEvent event) {
+    public void onCustSearch() {
         if(custSearch.getText().length() == 0){
             dialog("INFORMATION", "Search Error", "Search field empty");
         }
@@ -68,7 +76,7 @@ public class MainScreenController implements Initializable {
         }
     }
 
-    public void onCusClear(ActionEvent event) {
+    public void onCusClear() {
         custSearch.setText("");
         customerTableFill();
 
@@ -111,7 +119,7 @@ public class MainScreenController implements Initializable {
             dialog("INFORMATION", "Error", "Nothing selected to delete");
         }
     }
-    public void onCustDelete(ActionEvent event) {
+    public void onCustDelete() {
         try {
             Customer customerDelete = custTable.getSelectionModel().getSelectedItem();
             String content = "Are you sure you want to delete "+customerDelete.getCustomerName()+"? It will delete all appointments related to this customer";
@@ -126,7 +134,7 @@ public class MainScreenController implements Initializable {
         }
     }
 
-    public void onApptSearch(ActionEvent event) {
+    public void onApptSearch() {
         if(apptSearch.getText().length() == 0){
             dialog("INFORMATION", "Search Error", "Search field empty");
         }
@@ -140,12 +148,10 @@ public class MainScreenController implements Initializable {
             }
         }
     }
-
-    public void onApptClear(ActionEvent event) {
+    public void onApptClear() {
         apptSearch.setText("");
         appointmentTableFill();
     }
-
     public void onApptNew(ActionEvent event) {
         try {
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
@@ -158,7 +164,6 @@ public class MainScreenController implements Initializable {
             System.out.println(e.getMessage());
         }
     }
-
     static int getAppointmentEditID(){
         return appointmentEditID;
     }
@@ -183,7 +188,6 @@ public class MainScreenController implements Initializable {
             dialog("INFORMATION", "Error", "Nothing selected to edit");
         }
     }
-
     public void onApptDelete(ActionEvent event) {
         try {
             Appointment appointmentDelete = apptTable.getSelectionModel().getSelectedItem();
@@ -198,7 +202,6 @@ public class MainScreenController implements Initializable {
         }
     }
 
-
     public void onShowReport(ActionEvent event) {
         try {
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
@@ -212,12 +215,55 @@ public class MainScreenController implements Initializable {
         }
     }
 
-    public void onApptAll(ActionEvent event) {
-    }
-    public void onApptWeek(ActionEvent event) {
+    public void onApptAll() {
+        byMonthRadio.setSelected(false);
+        byWeekRadio.setSelected(false);
+        byDayRadio.setSelected(false);
+        appointmentTableFill();
     }
 
-    public void onApptMonth(ActionEvent event) {
+    public void onApptDay() {
+        byWeekRadio.setSelected(false);
+        byMonthRadio.setSelected(false);
+        byAllRadio.setSelected(false);
+
+        LocalDate now = LocalDate.now();
+        FilteredList<Appointment> appointmentFilter = new FilteredList<>(appointments);
+        appointmentFilter.setPredicate(row -> {
+            LocalDateTime startTime = LocalDateTime.parse(row.getStart(), df);
+            LocalDate date = startTime.toLocalDate();
+            return (date.equals(now));
+        });
+        apptTable.setItems(appointmentFilter);
+    }
+
+    public void onApptWeek() {
+        byDayRadio.setSelected(false);
+        byMonthRadio.setSelected(false);
+        byAllRadio.setSelected(false);
+
+        LocalDate now = LocalDate.now();
+        FilteredList<Appointment> filteredData = new FilteredList<>(appointments);
+        filteredData.setPredicate(row -> {
+            LocalDateTime startTime = LocalDateTime.parse(row.getStart(), df);
+            LocalDate date = startTime.toLocalDate();
+            return (date.isAfter(now.minusDays(1)) && date.isBefore(now.plusDays(7)));
+        });
+        apptTable.setItems(filteredData);
+    }
+
+    public void onApptMonth() {
+        byAllRadio.setSelected(false);
+        byAllRadio.setSelected(false);
+        byWeekRadio.setSelected(false);
+        LocalDate now = LocalDate.now();
+        FilteredList<Appointment> filteredData = new FilteredList<>(appointments);
+        filteredData.setPredicate(row -> {
+            LocalDateTime startTime = LocalDateTime.parse(row.getStart(), df);
+            LocalDate date = startTime.toLocalDate();
+            return (date.isAfter(now.minusDays(1)) && date.isBefore(now.plusMonths(1)));
+        });
+        apptTable.setItems(filteredData);
     }
 
 
@@ -246,5 +292,7 @@ public class MainScreenController implements Initializable {
         apptTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
         apptCustomerCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerName()));
         appointmentTableFill();
+        byDayRadio.setSelected(true);
+        onApptDay();
     }
 }

@@ -42,12 +42,12 @@ public class AppointmentController implements Initializable {
     private ObservableList<String> startTimeList = FXCollections.observableArrayList();
     private ObservableList<String> endTimeList = FXCollections.observableArrayList();
     private DateTimeFormatter timeFormatSrt = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
-    private DateTimeFormatter dateFormatSrt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private static DateTimeFormatter df = DateTimeFormatter.ofPattern("MM-dd-yyyy hh:mm a");
     private ZoneId zone = ZoneId.systemDefault();
     private boolean editMode = false;
     private Appointment editAppointment;
-
+    private ZonedDateTime startUTC;
+    private ZonedDateTime endUTC;
     public void onCustSearch(ActionEvent event) {
         if(custSearch.getText().length() == 0){
             dialog("INFORMATION", "Search Error", "Search field empty");
@@ -69,38 +69,78 @@ public class AppointmentController implements Initializable {
     }
 
     public void onSave(ActionEvent event) {
-
-        try{
-            int customerId = custTable.getSelectionModel().getSelectedItem().getCustomerId();
-            try{
-                LocalDateTime startLocal = LocalDateTime.of(dateField.getValue(), LocalTime.parse(startField.getValue(), timeFormatSrt));
-                LocalDateTime endLocal = LocalDateTime.of(dateField.getValue(), LocalTime.parse(endField.getValue(), timeFormatSrt));
-                ZonedDateTime startUTC = startLocal.atZone(zone).withZoneSameInstant(ZoneId.of("UTC"));
-                ZonedDateTime endUTC = endLocal.atZone(zone).withZoneSameInstant(ZoneId.of("UTC"));
-                if(!editMode) {
-                    AppointmentDB.createAppointment(customerId, titleField.getText(), startUTC, endUTC, typeField.getText(), locationField.getText(), descriptionField.getText());
+        if(validateSaveFields()) {
+            try {
+                int customerId = custTable.getSelectionModel().getSelectedItem().getCustomerId();
+                try {
+                    if(validateDate()) {
+                        if (!editMode) {
+                            AppointmentDB.createAppointment(customerId, titleField.getText(), startUTC, endUTC, typeField.getText(), locationField.getText(), descriptionField.getText());
+                        } else {
+                            AppointmentDB.editAppointment(getAppointmentEditID(), customerId, titleField.getText(), startUTC, endUTC, typeField.getText(), locationField.getText(), descriptionField.getText());
+                        }
+                        dialog("INFORMATION", "Saved", "Appointment Saved");
+                        editMode = false;
+                        resetAppointmentEditID();
+                        returnMain(event);
+                    }
+                } catch (Exception e) {
+                    dialog("ERROR", "Error", "Please choose a date.");
                 }
-                else{
-                    AppointmentDB.editAppointment(getAppointmentEditID(), customerId, titleField.getText(), startUTC, endUTC, typeField.getText(), locationField.getText(), descriptionField.getText());
-                }
-                dialog("INFORMATION", "Saved", "Appointment Saved");
-                editMode = false;
-                resetAppointmentEditID();
-                returnMain(event);
+            } catch (Exception e) {
+                dialog("ERROR", "Error", "Customer not selected");
             }
-            catch (Exception e){
-                dialog("ERROR", "Error", "Date and time not selected");
-            }
-        }
-        catch (Exception e){
-            dialog("ERROR", "Error", "Customer not selected");
         }
     }
+    private boolean validateDate(){
+        boolean error = true;
+        LocalDateTime startLocal = LocalDateTime.of(dateField.getValue(), LocalTime.parse(startField.getValue(), timeFormatSrt));
+        LocalDateTime endLocal = LocalDateTime.of(dateField.getValue(), LocalTime.parse(endField.getValue(), timeFormatSrt));
+        startUTC = startLocal.atZone(zone).withZoneSameInstant(ZoneId.of("UTC"));
+        endUTC = endLocal.atZone(zone).withZoneSameInstant(ZoneId.of("UTC"));
+        if(startUTC.equals(endUTC) || startUTC.isAfter(endUTC)){
+            error = false;
+            dialog("ERROR", "Error", "End time must be at least 15 minutes after start time");
+        }
+        if(AppointmentDB.validateOverlap(startUTC, endUTC, getAppointmentEditID())){
+            dialog("ERROR", "Error", "An appointment already exists in that time frame. Try another time frame");
+            error = false;
+        }
 
+        return error;
+    }
 
     public void onCancel(ActionEvent event) {
         dialog("CONFIRMATION", "Confirm", "Are you sure you want to cancel?");
         returnMain(event);
+    }
+
+    private boolean validateSaveFields(){
+        int error = 0;
+        String content = "";
+        if(titleField.getText().length() == 0 ){
+            error++;
+            content += "Please enter a title. \n";
+        }
+        if(dateField.getValue() == null ){
+            error++;
+            content += "Please choose a date. \n";
+        }
+        if(typeField.getText().length() == 0 ){
+            error++;
+            content += "Please enter a type. \n";
+        }
+        if(locationField.getText().length() == 0 ){
+            error++;
+            content += "Please enter a location. \n";
+        }
+        if (error == 0){
+            return true;
+        }
+        else {
+            dialog("ERROR","Input Error",content);
+            return false;
+        }
     }
 
     private void returnMain(ActionEvent event){

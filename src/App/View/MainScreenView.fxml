@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="882.0" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="App.Controller.MainScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="953.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Controller.MainScreenController">
    <children>
       <TableView fx:id="custTable" layoutX="18.0" layoutY="130.0" prefHeight="363.0" prefWidth="290.0">
         <columns>
@@ -17,13 +17,13 @@
           <TableColumn fx:id="custPhoneCol" prefWidth="142.0" text="Phone" />
         </columns>
       </TableView>
-      <TableView fx:id="apptTable" layoutX="338.0" layoutY="130.0" prefHeight="363.0" prefWidth="523.0">
+      <TableView fx:id="apptTable" layoutX="338.0" layoutY="130.0" prefHeight="363.0" prefWidth="595.0">
         <columns>
-          <TableColumn fx:id="apptStartCol" prefWidth="109.0" text="Start" />
-          <TableColumn fx:id="apptEndCol" prefWidth="106.0" text="End" />
-            <TableColumn fx:id="apptTitleCol" prefWidth="78.0" text="Title" />
-            <TableColumn fx:id="apptTypeCol" prefWidth="100.0" text="Type" />
-            <TableColumn fx:id="apptCustomerCol" prefWidth="129.0" text="Customer" />
+          <TableColumn fx:id="apptStartCol" prefWidth="122.0" text="Start" />
+          <TableColumn fx:id="apptEndCol" prefWidth="130.0" text="End" />
+            <TableColumn fx:id="apptTitleCol" prefWidth="113.0" text="Title" />
+            <TableColumn fx:id="apptTypeCol" prefWidth="91.0" text="Type" />
+            <TableColumn fx:id="apptCustomerCol" prefWidth="138.0" text="Customer" />
         </columns>
       </TableView>
       <Label layoutX="18.0" layoutY="14.0" text="Dashboard">
@@ -49,14 +49,15 @@
       <TextField fx:id="apptSearch" layoutX="338.0" layoutY="99.0" prefHeight="25.0" prefWidth="149.0" />
       <Button layoutX="494.0" layoutY="99.0" mnemonicParsing="false" onAction="#onApptSearch" prefWidth="60.0" text="Search" />
       <Button layoutX="560.0" layoutY="99.0" mnemonicParsing="false" onAction="#onApptClear" prefHeight="25.0" prefWidth="60.0" text="Clear" />
-      <Button layoutX="664.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptNew" prefHeight="25.0" prefWidth="60.0" text="New" />
-      <Button layoutX="734.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptEdit" prefHeight="25.0" prefWidth="60.0" text="Edit" />
-      <Button layoutX="801.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptDelete" prefHeight="25.0" prefWidth="60.0" text="Delete" />
-      <RadioButton layoutX="707.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptWeek" text="By Week" />
-      <RadioButton layoutX="788.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptMonth" text="By Month" />
-      <Button layoutX="734.0" layoutY="20.0" mnemonicParsing="false" onAction="#onShowReport" prefHeight="25.0" prefWidth="60.0" text="Reports" />
-      <Button layoutX="801.0" layoutY="20.0" mnemonicParsing="false" onAction="#onExit" prefHeight="25.0" prefWidth="60.0" text="Exit" />
-      <RadioButton layoutX="647.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptAll" text="All" />
+      <Button layoutX="736.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptNew" prefHeight="25.0" prefWidth="60.0" text="New" />
+      <Button layoutX="806.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptEdit" prefHeight="25.0" prefWidth="60.0" text="Edit" />
+      <Button layoutX="873.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptDelete" prefHeight="25.0" prefWidth="60.0" text="Delete" />
+      <RadioButton fx:id="byWeekRadio" layoutX="707.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptWeek" text="By Week" />
+      <RadioButton fx:id="byMonthRadio" layoutX="788.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptMonth" text="By Month" />
+      <Button layoutX="804.0" layoutY="20.0" mnemonicParsing="false" onAction="#onShowReport" prefHeight="25.0" prefWidth="60.0" text="Reports" />
+      <Button layoutX="871.0" layoutY="20.0" mnemonicParsing="false" onAction="#onExit" prefHeight="25.0" prefWidth="60.0" text="Exit" />
+      <RadioButton fx:id="byAllRadio" layoutX="877.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptAll" text="All" />
       <Button layoutX="248.0" layoutY="506.0" mnemonicParsing="false" onAction="#onCustDelete" prefHeight="25.0" prefWidth="60.0" text="Delete" />
+      <RadioButton fx:id="byDayRadio" layoutX="635.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptDay" text="By Day" />
    </children>
 </AnchorPane>
