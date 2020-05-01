@@ -24,6 +24,7 @@ import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
 import static App.Controller.MainScreenController.*;
 
+import static App.Utilities.Dialog.confirmationDialog;
 import static App.Utilities.Dialog.dialog;
 
 public class AppointmentController implements Initializable {
@@ -111,8 +112,11 @@ public class AppointmentController implements Initializable {
     }
 
     public void onCancel(ActionEvent event) {
-        dialog("CONFIRMATION", "Confirm", "Are you sure you want to cancel?");
-        returnMain(event);
+        if(confirmationDialog("Cancel", "Are you sure you want to cancel?")){
+            editMode = false;
+            resetAppointmentEditID();
+            returnMain(event);
+        }
     }
 
     private boolean validateSaveFields(){
@@ -178,7 +182,7 @@ public class AppointmentController implements Initializable {
         startField.getSelectionModel().select(LocalTime.of(8, 0).format(timeFormatSrt));
         endField.getSelectionModel().select(LocalTime.of(8, 15).format(timeFormatSrt));
 
-        if(getAppointmentEditID() >= 0){
+        if(getAppointmentEditID() > 0){
             editMode = true;
             editAppointment = AppointmentDB.searchAppointment(getAppointmentEditID());
             titleField.setText(editAppointment.getTitle());

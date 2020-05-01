@@ -7,6 +7,7 @@ Issam Ahmed
 */
 
 
+import App.Main;
 import App.Model.Appointment;
 import App.Model.Customer;
 import App.Utilities.AppointmentDB;
@@ -52,6 +53,8 @@ public class MainScreenController implements Initializable {
     public RadioButton byMonthRadio;
     public RadioButton byAllRadio;
     public RadioButton byDayRadio;
+    public Label userLabel;
+    public Label apptUserLabel;
     private Stage stage;
     private Parent scene;
     private ObservableList<Customer> customers;
@@ -254,7 +257,7 @@ public class MainScreenController implements Initializable {
 
     public void onApptMonth() {
         byAllRadio.setSelected(false);
-        byAllRadio.setSelected(false);
+        byDayRadio.setSelected(false);
         byWeekRadio.setSelected(false);
         LocalDate now = LocalDate.now();
         FilteredList<Appointment> filteredData = new FilteredList<>(appointments);
@@ -280,8 +283,26 @@ public class MainScreenController implements Initializable {
         appointments = AppointmentDB.getAllAppointments();
         apptTable.setItems(appointments);
     }
+    private void appointmentReminder() {
+        LocalDateTime now = LocalDateTime.now();
+        FilteredList<Appointment> filteredData = new FilteredList<>(appointments);
+        filteredData.setPredicate(row -> {
+            LocalDateTime rowDate = LocalDateTime.parse(row.getStart(), df);
+            return rowDate.isAfter(now.minusMinutes(1)) && rowDate.isBefore(now.plusMinutes(15));
+        });
+        if (!filteredData.isEmpty()) {
+            String customer =  filteredData.get(0).getCustomer().getCustomerName();
+            String start = filteredData.get(0).getStart();
+            String content = "You have a meeting with "+customer+" at "+start+".";
+            dialog("INFORMATION", "Meeting Reminder", content);
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        userLabel.setText(Main.currentUser.getUserName());
+        apptUserLabel.setText(Main.currentUser.getUserName());
+
         custNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomerName()));
         custPhoneCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getPhone()));
         customerTableFill();
@@ -294,5 +315,7 @@ public class MainScreenController implements Initializable {
         appointmentTableFill();
         byDayRadio.setSelected(true);
         onApptDay();
+
+        appointmentReminder();
     }
 }

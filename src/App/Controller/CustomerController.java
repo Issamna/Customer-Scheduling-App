@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import static App.Controller.MainScreenController.*;
+import static App.Utilities.Dialog.confirmationDialog;
 import static App.Utilities.Dialog.dialog;
 
 public class CustomerController implements Initializable {
@@ -34,7 +35,7 @@ public class CustomerController implements Initializable {
         if(validateSave()) {
             if (!editMode) {
                 CustomerDB.createCustomer(nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
-                        countryField.getText(), phNumberField.getText(), postalCodeField.getText());
+                        countryField.getText(), postalCodeField.getText(), phNumberField.getText());
             } else {
                 CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressID(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
                         countryField.getText(), phNumberField.getText(), postalCodeField.getText());
@@ -47,8 +48,11 @@ public class CustomerController implements Initializable {
     }
 
     public void onCancel(ActionEvent event) {
-        Dialog.dialog("CONFIRMATION", "Confirm", "Are you sure you want to cancel?");
-        returnMain(event);
+        if(confirmationDialog("Cancel", "Are you sure you want to cancel?")){
+            editMode = false;
+            resetCustomerEditID();
+            returnMain(event);
+        }
     }
     
     private void returnMain(ActionEvent event){

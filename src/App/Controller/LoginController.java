@@ -53,10 +53,8 @@ public class LoginController implements Initializable {
 
     public void onLogin(ActionEvent event) {
         //get input
-        //String userInput = userField.getText();
-        //String passwordInput = passwordField.getText();
-        String userInput = "test";
-        String passwordInput = "test";
+        String userInput = userField.getText();
+        String passwordInput = passwordField.getText();
         //check for empty field
         if(userInput.length() == 0 || passwordInput.length() == 0){
             dialog("ERROR",ln.getString("errorTitle"), ln.getString("empty"));
