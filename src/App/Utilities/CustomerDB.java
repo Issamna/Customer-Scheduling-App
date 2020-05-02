@@ -11,6 +11,8 @@ import App.Model.Country;
 import App.Model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import static App.Main.currentUser;
@@ -18,6 +20,8 @@ import static App.Utilities.Dialog.dialog;
 /**
  * CustomerDB
  * Database query for customers
+ * uses prepared statements for creating (INSERT) and editing (UPDATE) to deal with user inputs
+ * uses statements for the rest
  */
 public class CustomerDB {
 
@@ -30,14 +34,26 @@ public class CustomerDB {
      * @param country
      * @param postalCode
      * @param phone
+     * @return boolean if the statement was processed
      */
-    public static void createCustomer(String customerName, String address, String address2, String city, String country, String postalCode, String phone){
+    public static boolean createCustomer(String customerName, String address, String address2, String city, String country, String postalCode, String phone){
+        boolean error = true;
         //create address in address table associated with the customer
         Address customerAddress = createAddress(address, address2, city, country, postalCode, phone);
-        //Query and run query
-        String query = "INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy)"+
-                "VALUES ('"+customerName+"', "+customerAddress.getAddressId()+", 1, CURRENT_TIMESTAMP, '"+ currentUser.getUserName()+"', CURRENT_TIMESTAMP, '"+currentUser.getUserName()+"')";
-        QueryDB.query(query);
+        try{
+            String query = "INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy)"+
+                   "VALUES (?, ?, 1, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, customerName);
+            statement.setInt(2, customerAddress.getAddressId());
+            statement.setString(3, currentUser.getUserName());
+            statement.setString(4, currentUser.getUserName());
+            statement.executeUpdate();
+        }catch (SQLException e){
+            error = false;
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+        }
+        return error;
     }
 
     /**
@@ -54,15 +70,23 @@ public class CustomerDB {
         //city associated to the Address
         City cityReturn = validateCity(city, country);
         Address addressReturn = new Address();
-        //Query and run query
-        String query = "INSERT INTO address (address, address2, cityID, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy)"+
-                "VALUES ('"+address+"', '"+address2+"', "+cityReturn.getCityId()+", '"+postalCode+"', '"+phone+"',  CURRENT_TIMESTAMP, '"+currentUser.getUserName()+"', CURRENT_TIMESTAMP, '"+ currentUser.getUserName()+"')";
-        QueryDB.query(query);
-        //Query to get the appointment id
-        query = "SELECT LAST_INSERT_ID() FROM address";
-        QueryDB.returnQuery(query);
-        ResultSet result = QueryDB.getResult();
         try {
+            //Query and run query
+            String query = "INSERT INTO address (address, address2, cityID, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy)"+
+                    "VALUES (?, ?, ?, ?, ?,  CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, address);
+            statement.setString(2, address2);
+            statement.setInt(3, cityReturn.getCityId());
+            statement.setString(4, postalCode);
+            statement.setString(5, phone);
+            statement.setString(6, currentUser.getUserName());
+            statement.setString(7, currentUser.getUserName());
+            statement.executeUpdate();
+            //Query to get the appointment id
+            query = "SELECT LAST_INSERT_ID() FROM address";
+            statement = DBConnection.conn.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
             result.next();
             //create new address object
             addressReturn = new Address(Integer.parseInt(result.getString(1)), address, address2, cityReturn, postalCode, phone);
@@ -86,9 +110,11 @@ public class CustomerDB {
         String query;
         try{
             //Query and run query
-            query = "SELECT * FROM city WHERE city ='"+cityInput+"' AND countryId = "+country.getCountryId()+"";
-            QueryDB.returnQuery(query);
-            ResultSet result = QueryDB.getResult();
+            query = "SELECT * FROM city WHERE city = ? AND countryId = ?";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, cityInput);
+            statement.setInt(2, country.getCountryId());
+            ResultSet result = statement.executeQuery();
             //if exists create city object to return
             if(result.next()){
                 cityReturn.setCityId(result.getInt("cityID"));
@@ -97,9 +123,14 @@ public class CustomerDB {
             }
             //if doesn't exist method creates the city
             else {
-                query = "INSERT INTO city (city, countryID, createDate, createdBy, lastUpdate, lastUpdateBy)" +
-                        "VALUES ('"+cityInput+"', "+country.getCountryId()+", CURRENT_TIMESTAMP, '"+currentUser.getUserName()+"', CURRENT_TIMESTAMP, '"+ currentUser.getUserName()+"')";
-                QueryDB.query(query);
+                query =  "INSERT INTO city (city, countryID, createDate, createdBy, lastUpdate, lastUpdateBy)" +
+                        "VALUES (?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)";
+                statement = DBConnection.conn.prepareStatement(query);
+                statement.setString(1, cityInput);
+                statement.setInt(2, country.getCountryId());
+                statement.setString(3, currentUser.getUserName());
+                statement.setString(4, currentUser.getUserName());
+                statement.executeUpdate();
                 //recursion to validate city exists in database and creates city object
                 cityReturn = validateCity(cityInput, country.getCountryName());
             }
@@ -120,9 +151,10 @@ public class CustomerDB {
         String query;
         try {
             //Query and run query
-            query = "SELECT * FROM country WHERE country ='"+countryInput+"'";
-            QueryDB.returnQuery(query);
-            ResultSet result = QueryDB.getResult();
+            query = "SELECT * FROM country WHERE country = ?";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, countryInput);
+            ResultSet result = statement.executeQuery();
             //if exists create country object to return
             if(result.next()){
                 countryReturn.setCountryId(result.getInt("countryID"));
@@ -131,8 +163,12 @@ public class CustomerDB {
             //if doesn't exist method creates the country
             else{
                 query =  "INSERT INTO country (country, createDate, createdBy, lastUpdate, lastUpdateBy) " +
-                        "VALUES ('"+countryInput+"', CURRENT_TIMESTAMP, '"+currentUser.getUserName()+"', CURRENT_TIMESTAMP, '"+ currentUser.getUserName()+"')";
-                QueryDB.query(query);
+                        "VALUES (?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)";
+                statement = DBConnection.conn.prepareStatement(query);
+                statement.setString(1, countryInput);
+                statement.setString(2, currentUser.getUserName());
+                statement.setString(3, currentUser.getUserName());
+                statement.executeUpdate();
                 //recursion to validate country exists in database and creates city object
                 countryReturn = validateCountry(countryInput);
             }
@@ -154,15 +190,25 @@ public class CustomerDB {
      * @param country
      * @param postalCode
      * @param phone
+     * @return boolean if the statement was processed
      */
-    public static void editCustomer(int customerID, int addressID, String customerName, String address, String address2, String city, String country, String postalCode, String phone){
+    public static boolean editCustomer(int customerID, int addressID, String customerName, String address, String address2, String city, String country, String postalCode, String phone){
+        boolean error = true;
         //edit address in address table associated with the customer
         editAddress(addressID, address, address2, city, country, postalCode, phone);
         //Query and run query
-        String query = "UPDATE customer " +
-                "SET customerName = '"+customerName+"' "+
-                "WHERE customerId = "+customerID+" AND addressID = "+addressID;
-        QueryDB.query(query);
+        try{
+            String query = "UPDATE customer SET customerName = ? WHERE customerId = ? AND addressID = ?";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, customerName);
+            statement.setInt(2, customerID);
+            statement.setInt(3, addressID);
+            statement.executeUpdate();
+        }catch (SQLException e){
+            error = false;
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+        }
+        return error;
     }
 
     /**
@@ -179,10 +225,20 @@ public class CustomerDB {
         //city associated to the Address
         City cityReturn = validateCity(city, country);
         //Query and run query
-        String query = "UPDATE address " +
-                    "SET address = '"+address+"', address2 = '"+address2+"', cityId = "+cityReturn.getCityId()+", postalCode = '"+postalCode+"', phone = '"+phone+"' " +
-                    "WHERE addressID = "+addressID;
-        QueryDB.query(query);
+        try {
+            String query = "UPDATE address SET address = ?, address2 = ?, cityId = ?, postalCode = ?, phone = ? WHERE addressID = ?";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, address);
+            statement.setString(2, address2);
+            statement.setInt(3, cityReturn.getCityId());
+            statement.setString(4, postalCode);
+            statement.setString(5, phone);
+            statement.setInt(6,addressID);
+            statement.executeUpdate();
+        }
+        catch (SQLException e){
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -288,17 +344,18 @@ public class CustomerDB {
      */
     public static ObservableList<Customer> searchCustomers(String searchName){
         ObservableList<Customer> foundCustomers = FXCollections.observableArrayList();
-        //Query and run query
-        String query = "SELECT customer.customerId, customer.customerName, " +
-                "address.addressId, address.address, address.address2, address.postalCode, address.phone, " +
-                "city.cityId, city.city, " +
-                "country.countryId, country.country " +
-                "FROM customer, address, city, country " +
-                "WHERE customer.customerName LIKE '%"+searchName+"%' AND customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId " +
-                "ORDER BY customer.customerName;";
-        QueryDB.returnQuery(query);
-        ResultSet result = QueryDB.getResult();
         try {
+            //Query and run query
+            String query = "SELECT customer.customerId, customer.customerName, " +
+                    "address.addressId, address.address, address.address2, address.postalCode, address.phone, " +
+                    "city.cityId, city.city, " +
+                    "country.countryId, country.country " +
+                    "FROM customer, address, city, country " +
+                    "WHERE customer.customerName LIKE ? AND customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId " +
+                    "ORDER BY customer.customerName;";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, "%"+searchName+"%");
+            ResultSet result = statement.executeQuery();
             //get all the results
             while (result.next()) {
                 int customerID = result.getInt("customerId");
@@ -321,8 +378,4 @@ public class CustomerDB {
         }
         return foundCustomers;
     }
-
-
-
-
 }

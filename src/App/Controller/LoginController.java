@@ -7,6 +7,7 @@ Issam Ahmed
 */
 import App.Main;
 import App.Model.User;
+import App.Utilities.DBConnection;
 import App.Utilities.Log;
 import App.Utilities.QueryDB;
 import javafx.event.ActionEvent;
@@ -21,6 +22,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.net.URL;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -111,9 +113,10 @@ public class LoginController implements Initializable {
         User userReturn = new User();
         try {
             //Query and get results
-            String validateQuery = "SELECT * FROM user WHERE userName = '" + userInput + "'";
-            QueryDB.returnQuery(validateQuery);
-            ResultSet result = QueryDB.getResult();
+            String query = "SELECT * FROM user WHERE userName = ?";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, userInput);
+            ResultSet result = statement.executeQuery();
             //if exists
             if (result.next()) {
                 userReturn.setUserId(result.getInt("userId"));

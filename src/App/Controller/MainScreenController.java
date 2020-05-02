@@ -161,7 +161,7 @@ public class MainScreenController implements Initializable {
             }
         }
         catch(Exception e){
-            dialog("INFORMATION", "Error", "Nothing selected to delete");
+            dialog("INFORMATION", "Error", "Nothing selected to edit");
         }
     }
 
@@ -372,6 +372,7 @@ public class MainScreenController implements Initializable {
      */
     private void appointmentReminder() {
         //get current local date
+        appointments = AppointmentDB.getAllAppointmentsAllUsers();
         LocalDateTime now = LocalDateTime.now();
         FilteredList<Appointment> filteredData = new FilteredList<>(appointments);
         //Use lambda to make it easier to filter through all the data received from the database.
@@ -382,9 +383,10 @@ public class MainScreenController implements Initializable {
         });
         //if filtered data is not empty then set reminder
         if (!filteredData.isEmpty()) {
+            String user = filteredData.get(0).getUser().getUserName();
             String customer =  filteredData.get(0).getCustomer().getCustomerName();
             String start = filteredData.get(0).getStart();
-            String content = "You have a meeting with "+customer+" at "+start+".";
+            String content = user+" has a meeting with "+customer+" at "+start+".";
             dialog("INFORMATION", "Meeting Reminder", content);
         }
     }
@@ -416,8 +418,8 @@ public class MainScreenController implements Initializable {
         apptTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
         apptCustomerCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerName()));
         appointmentTableFill();
-        byDayRadio.setSelected(true);
-        onApptDay();
+        byAllRadio.setSelected(true);
+        onApptAll();
 
         //check for appointments
         appointmentReminder();

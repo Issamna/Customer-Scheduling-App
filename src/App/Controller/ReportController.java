@@ -165,6 +165,8 @@ public class ReportController implements Initializable {
         apptCustomerCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerName()));
         //add listener to consultant combo box
         consultantsField.valueProperty().addListener((ov, t, t1) -> onUserSelection());
+        consultantsField.setValue("All");
+        onUserSelection();
 
         //Report 2 fill
         todCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHour()));

@@ -29,6 +29,9 @@ import static App.Controller.MainScreenController.*;
 import static App.Utilities.Dialog.confirmationDialog;
 import static App.Utilities.Dialog.dialog;
 
+/**
+ * Appointment view controller
+ */
 public class AppointmentController implements Initializable {
     @FXML
     public TableView<Customer> custTable;
@@ -67,6 +70,7 @@ public class AppointmentController implements Initializable {
      * @param event
      */
     public void onSave(ActionEvent event) {
+        boolean error = true;
         //validate fields
         if(validateSaveFields()) {
             try {
@@ -77,17 +81,19 @@ public class AppointmentController implements Initializable {
                     if(validateDate()) {
                         //if saving new appointment
                         if (!editMode) {
-                            AppointmentDB.createAppointment(customerId, titleField.getText(), startUTC, endUTC, typeField.getValue(), locationField.getValue(), descriptionField.getText());
+                           error = AppointmentDB.createAppointment(customerId, titleField.getText(), startUTC, endUTC, typeField.getValue(), locationField.getValue(), descriptionField.getText());
                         }
                         //if editing new appointment
                         else {
-                            AppointmentDB.editAppointment(getAppointmentEditID(), customerId, titleField.getText(), startUTC, endUTC, typeField.getValue(), locationField.getValue(), descriptionField.getText());
+                            error = AppointmentDB.editAppointment(getAppointmentEditID(), customerId, titleField.getText(), startUTC, endUTC, typeField.getValue(), locationField.getValue(), descriptionField.getText());
                         }
-                        dialog("INFORMATION", "Saved", "Appointment Saved");
-                        //reset edit fields
-                        editMode = false;
-                        resetAppointmentEditID();
-                        returnMain(event);
+                        if(error) {//if true = no error
+                            dialog("INFORMATION", "Saved", "Appointment Saved");
+                            //reset edit fields
+                            editMode = false;
+                            resetAppointmentEditID();
+                            returnMain(event);
+                        }
                     }
                 } catch (Exception e) {
                     dialog("ERROR", "Error", "Please choose a date.");

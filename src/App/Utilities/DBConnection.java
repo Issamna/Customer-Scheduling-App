@@ -18,7 +18,7 @@ public class DBConnection {
     private static final String url = "jdbc:mysql://3.227.166.251/U07gSn";
     //Database Driver
     private static final String driver = "com.mysql.jdbc.Driver";
-    static Connection conn;
+    public static Connection conn;
     //username
     private static final String username = "U07gSn";
     //password
@@ -31,7 +31,7 @@ public class DBConnection {
         try {
             Class.forName(driver);
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("Connection start");
+            System.out.println("Connection Opened");
         }
         catch (ClassNotFoundException e){
             System.out.println("Error: "+e.getMessage());

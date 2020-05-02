@@ -7,7 +7,6 @@ Issam Ahmed
 */
 import App.Model.Customer;
 import App.Utilities.CustomerDB;
-import App.Utilities.Dialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,23 +48,26 @@ public class CustomerController implements Initializable {
      * @param event
      */
     public void onSave(ActionEvent event) {
+        boolean error = true;
         //validate fields
         if(validateSave()) {
             //if saving new customer
             if (!editMode) {
-                CustomerDB.createCustomer(nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
+                error = CustomerDB.createCustomer(nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
                         countryField.getText(), postalCodeField.getText(), phNumberField.getText());
             }
             //if editing new customer
             else {
-                CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressId(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
+                error = CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressId(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
                         countryField.getText(), phNumberField.getText(), postalCodeField.getText());
             }
-            Dialog.dialog("INFORMATION", "Customer " + nameField.getText(), nameField.getText() + " contact information saved.");
-            //reset edit fields
-            editMode = false;
-            resetCustomerEditID();
-            returnMain(event);
+            if(error) {//if true = no error
+                dialog("INFORMATION", "Customer " + nameField.getText(), nameField.getText() + " contact information saved.");
+                //reset edit fields
+                editMode = false;
+                resetCustomerEditID();
+                returnMain(event);
+            }
         }
     }
 
@@ -113,7 +115,11 @@ public class CustomerController implements Initializable {
         }
         if(phNumberField.getText().length() <10 || phNumberField.getText().length()>20){
             error++;
-            content += "Please enter valid phone number. \n";
+            content += "Please enter valid phone number. (10 digits and less then 20 digits)\n";
+        }
+        else if(isNotInteger(phNumberField.getText())){
+            error++;
+            content += "Please enter valid phone number. No text or dashes. \n";
         }
         if(address1Field.getText().length() == 0 ){
             error++;
@@ -129,7 +135,11 @@ public class CustomerController implements Initializable {
         }
         if(postalCodeField.getText().length() <5 || postalCodeField.getText().length()>10){
             error++;
-            content += "Please enter valid ZIP/Postal Code. \n";
+            content += "Please enter valid ZIP/Postal Code. (5 digits and less then 10 digits)\n";
+        }
+        else if(isNotInteger(postalCodeField.getText())){
+            error++;
+            content += "Please enter valid ZIP/Postal Code. No text or dashes. \n";
         }
         if (error == 0){
             return true;
@@ -137,6 +147,16 @@ public class CustomerController implements Initializable {
         else {
             dialog("ERROR","Input Error",content);
             return false;
+        }
+    }
+    //check if integer for phone number and zip/postal code
+    private boolean isNotInteger(String input){
+        try {
+            Integer.parseInt(input);
+            return false;
+        }
+        catch (Exception e) {
+            return true;
         }
     }
 

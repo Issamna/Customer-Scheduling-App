@@ -9,6 +9,8 @@ import App.Main;
 import App.Model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -22,6 +24,8 @@ import static App.Utilities.Dialog.dialog;
 /**
  * AppointmentDB
  * Database query for appointments
+ * uses prepared statements for creating (INSERT) and editing (UPDATE) to deal with user inputs
+ * uses statements for the rest
  */
 public class AppointmentDB {
     //Default zoneID
@@ -37,17 +41,34 @@ public class AppointmentDB {
      * @param type
      * @param location
      * @param description
+     * @return boolean if the statement was processed
      */
-    public static void createAppointment(int customerID, String title, ZonedDateTime start, ZonedDateTime end, String type, String location, String description){
+    public static boolean createAppointment(int customerID, String title, ZonedDateTime start, ZonedDateTime end, String type, String location, String description){
+        boolean error = true;
         //convert ZoneDateTime to TimeStamp
         Timestamp startTimeStamp = Timestamp.valueOf(start.toLocalDateTime());
         Timestamp endTimeStamp = Timestamp.valueOf(end.toLocalDateTime());
-        //Query
-        String query = "INSERT INTO appointment (customerId, userId, title, description, location, type, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
-                "VALUES ("+customerID+", "+ currentUser.getUserId()+", '"+title+"', '"+description+"', '"+location+"', '"+type+"', '', '', '"+startTimeStamp+"', '"+endTimeStamp+"', " +
-                "CURRENT_TIMESTAMP, '"+ currentUser.getUserName()+"', CURRENT_TIMESTAMP, '"+ currentUser.getUserName()+"');";
-        //Run query
-        QueryDB.query(query);
+        //Query and run
+        try {
+            String query = "INSERT INTO appointment (customerId, userId, title, description, location, type, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
+                    "VALUES ( ?, ?, ?, ?, ?, ?, '', '', ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?);";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setInt(1, customerID);
+            statement.setInt(2, currentUser.getUserId());
+            statement.setString(3, title);
+            statement.setString(4, description);
+            statement.setString(5, location);
+            statement.setString(6, type);
+            statement.setTimestamp(7, startTimeStamp);
+            statement.setTimestamp(8, endTimeStamp);
+            statement.setString(9, currentUser.getUserName());
+            statement.setString(10, currentUser.getUserName());
+            statement.executeUpdate();
+        }catch (SQLException e){
+            error = false;
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+        }
+        return error;
     }
 
     /**
@@ -60,18 +81,34 @@ public class AppointmentDB {
      * @param type
      * @param location
      * @param description
+     * @return boolean if the statement was processed
      */
-    public static void editAppointment(int appointmentID, int customerID, String title, ZonedDateTime start, ZonedDateTime end, String type, String location, String description){
+    public static boolean editAppointment(int appointmentID, int customerID, String title, ZonedDateTime start, ZonedDateTime end, String type, String location, String description){
+        boolean error = true;
         //convert ZoneDateTime to TimeStamp
         Timestamp startTimeStamp = Timestamp.valueOf(start.toLocalDateTime());
         Timestamp endTimeStamp = Timestamp.valueOf(end.toLocalDateTime());
         //Query
-        String query = "UPDATE appointment " +
-                "SET customerId = '"+customerID+"', userId = '"+currentUser.getUserId()+"', title = '"+title+"', " +
-                "description = '"+description+"', location = '"+location+"', start = '"+startTimeStamp+"' , end = '"+endTimeStamp+"' " +
-                "WHERE appointmentId = "+appointmentID;
-        //Run query
-        QueryDB.query(query);
+        try {
+            String query = "UPDATE appointment " +
+                    "SET customerId = ?, userId = ?, title = ?, " +
+                    "description = ?, location = ?, type = ?, start = ?, end = ? WHERE appointmentId = ?";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setInt(1, customerID);
+            statement.setInt(2, currentUser.getUserId());
+            statement.setString(3, title);
+            statement.setString(4, description);
+            statement.setString(5, location);
+            statement.setString(6, type);
+            statement.setTimestamp(7, startTimeStamp);
+            statement.setTimestamp(8, endTimeStamp);
+            statement.setInt(9, appointmentID);
+            statement.executeUpdate();
+        }catch (SQLException e){
+            error = false;
+            dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+        }
+        return error;
     }
 
     /**
@@ -99,6 +136,7 @@ public class AppointmentDB {
                 error = true;
             }
         } catch (SQLException e) {
+            error = false;
             dialog("ERROR","SQL Error","Error: "+ e.getMessage());
         }
         return error;
@@ -124,7 +162,30 @@ public class AppointmentDB {
         QueryDB.query(query);
     }
 
+
     //Search or get all appointments
+    private static User getUserbyID(int userId){
+            User userReturn = new User();
+            //Query and get results
+            String query = "SELECT * FROM user WHERE userId = "+userId;
+            QueryDB.returnQuery(query);
+            ResultSet result = QueryDB.getResult();
+            try {
+                //if exists
+                if (result.next()) {
+                    userReturn.setUserId(result.getInt("userId"));
+                    userReturn.setUserName(result.getString("userName"));
+                    userReturn.setPassword(result.getString("password"));
+                }
+                else {
+                    return null;
+                }
+            }catch (SQLException e){
+                System.out.println("Error: "+ e.getMessage());
+                dialog("ERROR","SQL Error","Error: "+ e.getMessage());
+            }
+            return userReturn;
+    }
     /**
      * Method to return all appointments of the current user in database
      * @return ObservableList<Appointment> list of all appointments of current user
@@ -257,7 +318,7 @@ public class AppointmentDB {
                 Appointment appointment = new Appointment();
                 appointment.setAppointmentId(result.getInt("appointmentId"));
                 appointment.setCustomer(customer);
-                appointment.setUser(Main.currentUser);
+                appointment.setUser(getUserbyID(result.getInt("userID")));
                 appointment.setTitle(result.getString("title"));
                 appointment.setType(result.getString("type"));
                 appointment.setLocation(result.getString("location"));
@@ -280,11 +341,12 @@ public class AppointmentDB {
      */
     public static ObservableList<Appointment> getAppointmentsByUser(String userName){
         ObservableList<Appointment> allAppointments= FXCollections.observableArrayList();
-        //Query and run query
-        String query = "SELECT * FROM appointment, user WHERE appointment.userId = user.userId AND user.userName = '"+userName+"' ORDER BY start;";
-        QueryDB.returnQuery(query);
-        ResultSet result = QueryDB.getResult();
         try{
+            //Query and run query
+            String query = "SELECT * FROM appointment, user WHERE appointment.userId = user.userId AND user.userName = ? ORDER BY start;";
+            PreparedStatement statement = DBConnection.conn.prepareStatement(query);
+            statement.setString(1, userName);
+            ResultSet result = statement.executeQuery();
             while (result.next()){
                 //search customer table to get customer associated with appointment
                 Customer customer = CustomerDB.searchCustomer(result.getInt("customerId"));
@@ -299,7 +361,7 @@ public class AppointmentDB {
                 Appointment appointment = new Appointment();
                 appointment.setAppointmentId(result.getInt("appointmentId"));
                 appointment.setCustomer(customer);
-                appointment.setUser(Main.currentUser);
+                appointment.setUser(getUserbyID(result.getInt("userID")));
                 appointment.setTitle(result.getString("title"));
                 appointment.setType(result.getString("type"));
                 appointment.setLocation(result.getString("location"));

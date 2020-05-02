@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="953.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.Controller.MainScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="953.0" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="App.Controller.MainScreenController">
    <children>
       <TableView fx:id="custTable" layoutX="18.0" layoutY="130.0" prefHeight="363.0" prefWidth="290.0">
         <columns>
@@ -49,13 +49,13 @@
       <Button layoutX="736.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptNew" prefHeight="25.0" prefWidth="60.0" text="New" />
       <Button layoutX="806.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptEdit" prefHeight="25.0" prefWidth="60.0" text="Edit" />
       <Button layoutX="873.0" layoutY="506.0" mnemonicParsing="false" onAction="#onApptDelete" prefHeight="25.0" prefWidth="60.0" text="Delete" />
-      <RadioButton fx:id="byWeekRadio" layoutX="410.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptWeek" text="By Week" />
-      <RadioButton fx:id="byMonthRadio" layoutX="491.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptMonth" text="By Month" />
+      <RadioButton fx:id="byWeekRadio" layoutX="469.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptWeek" text="This Week" />
+      <RadioButton fx:id="byMonthRadio" layoutX="561.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptMonth" text="This Month" />
       <Button layoutX="804.0" layoutY="20.0" mnemonicParsing="false" onAction="#onShowReport" prefHeight="25.0" prefWidth="60.0" text="Reports" />
       <Button layoutX="871.0" layoutY="20.0" mnemonicParsing="false" onAction="#onExit" prefHeight="25.0" prefWidth="60.0" text="Exit" />
-      <RadioButton fx:id="byAllRadio" layoutX="580.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptAll" text="All" />
+      <RadioButton fx:id="byAllRadio" layoutX="347.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptAll" text="All" />
       <Button layoutX="248.0" layoutY="506.0" mnemonicParsing="false" onAction="#onCustDelete" prefHeight="25.0" prefWidth="60.0" text="Delete" />
-      <RadioButton fx:id="byDayRadio" layoutX="338.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptDay" text="By Day" />
+      <RadioButton fx:id="byDayRadio" layoutX="397.0" layoutY="103.0" mnemonicParsing="false" onAction="#onApptDay" text="Today" />
       <Label fx:id="userLabel" layoutX="18.0" layoutY="2.0" text="User">
          <font>
             <Font name="System Bold" size="22.0" />

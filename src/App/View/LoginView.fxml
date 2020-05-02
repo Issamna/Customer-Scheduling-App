@@ -14,7 +14,7 @@
             <Font name="System Bold" size="23.0" />
          </font>
       </Label>
-      <Label fx:id="userNameLabesl" layoutX="25.0" layoutY="102.0" text="User Name: " />
+      <Label fx:id="userNameLabel" layoutX="25.0" layoutY="102.0" text="User Name: " />
       <TextField fx:id="userField" layoutX="163.0" layoutY="98.0" prefHeight="25.0" prefWidth="197.0" />
       <PasswordField fx:id="passwordField" layoutX="162.0" layoutY="144.0" prefHeight="25.0" prefWidth="197.0" />
       <Label fx:id="passwordLabel" layoutX="29.0" layoutY="148.0" text="Password: " />
