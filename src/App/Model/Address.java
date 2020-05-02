@@ -1,8 +1,13 @@
 package App.Model;
-
+/*
+C195 Performance Assessment
+Issam Ahmed
+000846138
+5/02/2020
+*/
 public class Address {
     //Address properties
-    private int addressID;
+    private int addressId;
     private String address;
     private String address2;
     private City city;
@@ -10,11 +15,10 @@ public class Address {
     private String phone;
 
     //empty constructor
-    public Address(){
-    }
+    public Address(){}
     //constructor
-    public Address(int addressID, String address, String address2, City city, String postalCode, String phone){
-        this.addressID = addressID;
+    public Address(int addressId, String address, String address2, City city, String postalCode, String phone){
+        this.addressId = addressId;
         this.address = address;
         this.address2 = address2;
         this.city = city;
@@ -22,8 +26,8 @@ public class Address {
         this.phone = phone;
     }
     //Mutator (setters)
-    public void setAddressID(int addressID) {
-        this.addressID = addressID;
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
     }
 
     public void setAddress(String address) {
@@ -47,8 +51,8 @@ public class Address {
     }
 
     //Accessors (getters)
-    public int getAddressID() {
-        return addressID;
+    public int getAddressId() {
+        return addressId;
     }
 
     public String getAddress() {

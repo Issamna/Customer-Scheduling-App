@@ -1,8 +1,13 @@
 package App.Model;
-
+/*
+C195 Performance Assessment
+Issam Ahmed
+000846138
+5/02/2020
+*/
 public class Country {
-    //User properties
-    private int countryID;
+    //Country properties
+    private int countryId;
     private String countryName;
 
     //empty constructor
@@ -11,13 +16,13 @@ public class Country {
 
     //constructor
     public Country(int countryID, String countryName){
-        this.countryID = countryID;
+        this.countryId = countryID;
         this.countryName = countryName;
     }
 
     //Mutator (setters)
-    public void setCountryID(int countryID){
-        this.countryID = countryID;
+    public void setCountryId(int countryId){
+        this.countryId = countryId;
     }
 
     public void setCountryName(String countryName){
@@ -25,8 +30,8 @@ public class Country {
     }
 
     //Accessors (getters)
-    public int getCountryID() {
-        return countryID;
+    public int getCountryId() {
+        return countryId;
     }
 
     public String getCountryName() {

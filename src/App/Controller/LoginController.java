@@ -3,9 +3,8 @@ package App.Controller;
 C195 Performance Assessment
 Issam Ahmed
 000846138
-4/27/2020
+5/02/2020
 */
-
 import App.Main;
 import App.Model.User;
 import App.Utilities.Log;
@@ -21,15 +20,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-
 import static App.Utilities.Dialog.dialog;
 
+/**
+ * Login view controller
+ */
 public class LoginController implements Initializable {
     @FXML
     public Label loginTitle;
@@ -50,7 +49,10 @@ public class LoginController implements Initializable {
     private Parent scene;
     ResourceBundle ln;
 
-
+    /**
+     * Method to login
+     * @param event
+     */
     public void onLogin(ActionEvent event) {
         //get input
         String userInput = userField.getText();
@@ -60,15 +62,20 @@ public class LoginController implements Initializable {
             dialog("ERROR",ln.getString("errorTitle"), ln.getString("empty"));
         }
         else{
+            //validate user
             user = validateUsername(userInput);
+            //if user doesn't exist
             if(user == null){
                 dialog("ERROR",ln.getString("errorTitle"),ln.getString("incorrectUser"));
             }
+            //check if password matches
             else if(user.getPassword().equals(passwordInput)){
-               // dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
-               // Log.writeLog(user.getUserName());
+                dialog("INFORMATION", ln.getString("successTitle"), ln.getString("successful"));
+                //write to loginreport
+                Log.writeLog(user.getUserName());
+                //make programs current user to user that logged in
                 Main.currentUser = user;
-                System.out.println(user.getUserName()+" "+user.getUserID());
+                //open main screen
                 try {
                     stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     scene = FXMLLoader.load(getClass().getResource("/App/View/MainScreenView.fxml"));
@@ -86,25 +93,36 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Cancel and exit program
+     * @param event
+     */
     public void onCancel(ActionEvent event) {
+        //Exit program
         ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
     }
 
+    /**
+     * Validate user
+     * @param userInput
+     * @return User if exist
+     */
     private User validateUsername(String userInput) {
         User userReturn = new User();
         try {
+            //Query and get results
             String validateQuery = "SELECT * FROM user WHERE userName = '" + userInput + "'";
             QueryDB.returnQuery(validateQuery);
             ResultSet result = QueryDB.getResult();
+            //if exists
             if (result.next()) {
-                userReturn.setUserID(result.getInt("userId"));
+                userReturn.setUserId(result.getInt("userId"));
                 userReturn.setUserName(result.getString("userName"));
                 userReturn.setPassword(result.getString("password"));
             }
             else {
                 return null;
             }
-
         }catch (SQLException e){
             System.out.println("Error: "+ e.getMessage());
             dialog("ERROR","SQL Error","Error: "+ e.getMessage());
@@ -112,11 +130,14 @@ public class LoginController implements Initializable {
         return userReturn;
     }
 
-
+    /**
+     * Initialize login View
+     * @param location
+     * @param ln
+     */
     @Override
     public void initialize(URL location, ResourceBundle ln) {
         this.ln = ln;
-
         loginTitle.setText(ln.getString("header"));
         userNameLabel.setText(ln.getString("username"));
         passwordLabel.setText(ln.getString("password"));

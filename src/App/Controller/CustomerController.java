@@ -1,9 +1,15 @@
 package App.Controller;
-
+/*
+C195 Performance Assessment
+Issam Ahmed
+000846138
+5/02/2020
+*/
 import App.Model.Customer;
 import App.Utilities.CustomerDB;
 import App.Utilities.Dialog;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -11,50 +17,76 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import static App.Controller.MainScreenController.*;
 import static App.Utilities.Dialog.confirmationDialog;
 import static App.Utilities.Dialog.dialog;
 
+/**
+ * Customer View controller
+ */
 public class CustomerController implements Initializable {
-
+    @FXML
     public TextField nameField;
+    @FXML
     public TextField phNumberField;
+    @FXML
     public TextField address1Field;
+    @FXML
     public TextField address2Field;
+    @FXML
     public TextField cityField;
+    @FXML
     public TextField countryField;
+    @FXML
     public TextField postalCodeField;
     private boolean editMode;
     private Customer editCustomer;
 
+    /**
+     * Save customer details
+     * @param event
+     */
     public void onSave(ActionEvent event) {
+        //validate fields
         if(validateSave()) {
+            //if saving new customer
             if (!editMode) {
                 CustomerDB.createCustomer(nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
                         countryField.getText(), postalCodeField.getText(), phNumberField.getText());
-            } else {
-                CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressID(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
+            }
+            //if editing new customer
+            else {
+                CustomerDB.editCustomer(getCustomerEditID(), editCustomer.getAddress().getAddressId(), nameField.getText(), address1Field.getText(), address2Field.getText(), cityField.getText(),
                         countryField.getText(), phNumberField.getText(), postalCodeField.getText());
             }
             Dialog.dialog("INFORMATION", "Customer " + nameField.getText(), nameField.getText() + " contact information saved.");
+            //reset edit fields
             editMode = false;
             resetCustomerEditID();
             returnMain(event);
         }
     }
 
+    /**
+     * Cancel and return to main screen
+     * @param event
+     */
     public void onCancel(ActionEvent event) {
+        //User confirmation to cancel
         if(confirmationDialog("Cancel", "Are you sure you want to cancel?")){
+            //reset edit fields
             editMode = false;
             resetCustomerEditID();
             returnMain(event);
         }
     }
-    
+
+    /**
+     * Method to return to main screen
+     * @param event
+     */
     private void returnMain(ActionEvent event){
         try {
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
@@ -68,6 +100,10 @@ public class CustomerController implements Initializable {
         }
     }
 
+    /**
+     * Check if fields are populated (Except Address 2 Field)
+     * @return true if populated
+     */
     private boolean validateSave(){
         int error = 0;
         String content = "";
@@ -102,10 +138,16 @@ public class CustomerController implements Initializable {
             dialog("ERROR","Input Error",content);
             return false;
         }
-
     }
+
+    /**
+     * Initialize customer view
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Check if edit mode. Fills fields with data from the main screen selection
         if(getCustomerEditID() >=0){
             editMode = true;
             editCustomer = CustomerDB.searchCustomer(getCustomerEditID());

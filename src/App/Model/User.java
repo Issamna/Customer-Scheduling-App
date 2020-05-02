@@ -1,32 +1,28 @@
 package App.Model;
-
 /*
 C195 Performance Assessment
 Issam Ahmed
 000846138
-4/27/2020
+5/02/2020
 */
-
 public class User {
     //User properties
-    private int userID;
+    private int userId;
     private String userName;
     private String password;
 
     //empty constructor
-    public User(){
-
-    }
+    public User(){}
     //constructor
     public User(int userID, String userName, String password){
-        this.userID = userID;
+        this.userId = userID;
         this.userName = userName;
         this.password = password;
     }
 
     //Mutator (setters)
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public void setUserName(String userName) {
@@ -38,8 +34,8 @@ public class User {
     }
 
     //Accessors (getters)
-    public int getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
     public String getUserName() {

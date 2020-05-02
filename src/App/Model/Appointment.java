@@ -1,6 +1,12 @@
 package App.Model;
-
+/*
+C195 Performance Assessment
+Issam Ahmed
+000846138
+5/02/2020
+*/
 public class Appointment {
+    //Appointment properties
     private int appointmentId;
     private Customer customer;
     private User user;
@@ -11,9 +17,11 @@ public class Appointment {
     private String start;
     private String end;
 
+    //empty constructor
     public Appointment() {
     }
 
+    //constructor
     public Appointment(int appointmentId, Customer customer, User user, String title, String type, String location, String description, String start, String end){
         this.appointmentId = appointmentId;
         this.customer = customer;
@@ -26,7 +34,7 @@ public class Appointment {
         this.end = end;
     }
 
-
+    //Mutator (setters)
     public void setAppointmentId(int appointmentId) {
         this.appointmentId = appointmentId;
     }
@@ -59,6 +67,11 @@ public class Appointment {
         this.end = end;
     }
 
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    //Accessors (getters)
     public int getAppointmentId() {
         return appointmentId;
     }
@@ -95,7 +108,4 @@ public class Appointment {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
 }
